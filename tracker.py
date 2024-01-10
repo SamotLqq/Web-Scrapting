@@ -26,16 +26,11 @@ def enviar_mail(emisoraAcc, emisorPass, receptorAcc, body):
     smtp_username = emisoraAcc
     smtp_password = emisorPass
 
-    # Configuración del correo electrónico
-    sender_email = emisoraAcc
-    receiver_email = receptorAcc
-    subject = "Mu"
-
     # Construir el mensaje de correo electrónico
     message = MIMEMultipart()
-    message["From"] = sender_email
-    message["To"] = receiver_email
-    message["Subject"] = subject
+    message["From"] = emisoraAcc
+    message["To"] = receptorAcc
+    message["Subject"] = "Mu"
     message.attach(MIMEText(body, "plain"))
 
     # Conectar al servidor SMTP de Gmail y enviar el correo
@@ -46,7 +41,7 @@ def enviar_mail(emisoraAcc, emisorPass, receptorAcc, body):
             server.login(smtp_username, smtp_password)
 
             # Enviar el correo electrónico
-            server.sendmail(sender_email, receiver_email, message.as_string())
+            server.sendmail(emisoraAcc, receptorAcc, message.as_string())
 
         print("Correo enviado exitosamente.")
     except Exception as e:
@@ -118,7 +113,9 @@ def main():
         posiciones_originales = extraer_posiciones(driver)
         original_x = posiciones_originales[0]
         original_y = posiciones_originales[1]
-        print("Las coordenadas originales son: ", original_x, ", ", original_y)
+        body = "Las coordenadas iniciales son: " + str(original_x) + ", " + str(original_y)
+        print(body)
+        enviar_mail(mail_app, ctr_app, mail, body)
 
         # verificar posicion actual
         posiciones_finales = verificar_coordenadas(driver, original_x, original_y)
@@ -126,9 +123,9 @@ def main():
         final_y = posiciones_finales[1]
 
         # enviar mail
-        body = "Usuario: " + username + " - Coordenadas originales: " + original_x + ", " + original_y + " - Coordenadas finales: " + final_x + ", " + final_y + "."
+        body = "Las coordenadas finales son: " + str(final_x) + ", " + str(final_y)
+        print(body)
         enviar_mail(mail_app, ctr_app, mail, body)
-        print("Las coordenadas finales son: ", final_x, ", ", final_y)
         driver.close()
     except:
         print("Usuario, Contraseña o Mail no valido")
